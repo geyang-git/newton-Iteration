@@ -1,4 +1,4 @@
-import {df} from "@/tool/math";
+import {df} from "@/core/math";
 
 // 牛顿迭代法求函数根
 // Language: javascript

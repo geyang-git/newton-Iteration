@@ -1,6 +1,7 @@
 import $ from "jquery";
 import functionPlot from "function-plot";
 
+// 绘制函数图像
 export const plot = (f) => {
   const element = $('#root')
   functionPlot({

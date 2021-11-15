@@ -1,10 +1,15 @@
 <template>
   <div>
     <el-alert title="按F12查看运行过程" type="success" :closable="false"/>
-    <div style="margin-top: 20px">简单迭代 Demo:</div>
+    Expression：
+    <el-input v-model="func" placeholder="Please input Expression">
+      <template #prefix>
+        <div class="prefix">0 =</div>
+      </template>
+    </el-input>
+    <div style="margin-top: 20px">Demo:</div>
     <el-row>
-      <el-button type="primary" v-for="(item,index) in fucList" @click="switchSimpleDome(item,index)" :key="index">
-        {{ item }}
+      <el-button type="primary" v-for="(item,index) in fucList" @click="switchDome(item)" :key="index">{{ item }}
       </el-button>
     </el-row>
     <el-descriptions title="参数:" style="margin-top: 20px" :border="true" size="mini">
@@ -41,12 +46,14 @@
       </el-descriptions-item>
     </el-descriptions>
     <div>output：{{ output }}</div>
+    <div id="root"></div>
   </div>
 </template>
 
 <script>
 import {Parser} from "expr-eval";
-import {iteration} from "@/core/Iteration";
+import {plot} from "@/core/Draw";
+import {newton} from "@/core/Newton";
 
 
 const parser = new Parser()
@@ -61,47 +68,63 @@ export default {
   data() {
     return {
       func: 'x^2-3*x+2-e^x',
-      simpleFunc: '',
       start: 1,
       max_iter: 100,
       num: 8,
       fucList: ['x^2-3*x+2-e^x', 'x^3+2*x^2+10*x-20'],
-      simpleFuncList: ['(-e^x+x^2+2)/3', '(20-2*x^2)/(x^2+10)'],
     }
   },
   computed: {
     epsilon() {
       return Math.pow(10, -this.num);
     },
-    simpleExpr() {
+    expr() {
       let res = ''
       try {
-        res = parser.parse(this.simpleFunc)
+        res = parser.parse(this.func)
       } catch (_e) {
         // console.log(e)
       }
       return res
     },
-    simpleExprFun() {
+    exprFun() {
       let res = () => 0
       try {
-        res = this.simpleExpr.toJSFunction('x')
+        res = this.expr.toJSFunction('x')
       } catch (_e) {
         // console.log(e)
       }
       return res
     },
     output() {
-      return iteration(this.simpleExprFun, this.start, this.max_iter, this.epsilon)
+      return newton(this.exprFun, this.start, this.max_iter, this.epsilon)
     }
+  },
+  mounted() {
+    plot(this.exprFun);
+    $(window).resize(() => {
+      plot(this.exprFun);
+    });
   },
   methods: {
-    switchSimpleDome(exp, index) {
-      this.methodSwitch = false
+    switchDome(exp) {
       this.func = exp
-      this.simpleFunc = this.simpleFuncList[index]
     }
   },
+  watch: {
+    func() {
+      plot(this.exprFun);
+    },
+    start() {
+      plot(this.exprFun);
+    },
+    max_iter() {
+      plot(this.exprFun);
+    },
+    epsilon() {
+      plot(this.exprFun);
+    }
+  }
 }
 </script>
 
