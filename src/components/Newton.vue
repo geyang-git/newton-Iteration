@@ -101,9 +101,9 @@ export default {
     }
   },
   mounted() {
-    plot(this.exprFun);
+    plot([this.exprFun]);
     $(window).resize(() => {
-      plot(this.exprFun);
+      plot([this.exprFun]);
     });
   },
   methods: {
@@ -113,16 +113,16 @@ export default {
   },
   watch: {
     func() {
-      plot(this.exprFun);
+      plot([this.exprFun]);
     },
     start() {
-      plot(this.exprFun);
+      plot([this.exprFun]);
     },
     max_iter() {
-      plot(this.exprFun);
+      plot([this.exprFun]);
     },
     epsilon() {
-      plot(this.exprFun);
+      plot([this.exprFun]);
     }
   }
 }
